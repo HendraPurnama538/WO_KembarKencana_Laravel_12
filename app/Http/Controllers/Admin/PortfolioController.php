@@ -39,9 +39,9 @@ class PortfolioController extends Controller
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
             'images'      => 'nullable|array',
-            'images.*'    => 'image|mimes:jpeg,png,jpg,webp|max:3072',
+            'images.*'    => 'mimes:jpeg,png,jpg,webp,heic|max:3072',
             // Kolom image lama (single) tetap didukung untuk backward compat
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image'       => 'nullable|mimes:jpeg,png,jpg,webp,heic|max:2048',
         ]);
 
         // Simpan data utama portfolio
@@ -92,7 +92,7 @@ class PortfolioController extends Controller
             'title'       => 'required|string|max:255',
             'description' => 'required|string',
             'images'      => 'nullable|array',
-            'images.*'    => 'image|mimes:jpeg,png,jpg,webp|max:3072',
+            'images.*'    => 'mimes:jpeg,png,jpg,webp,heic|max:3072',
             'delete_images' => 'nullable|array',
             'delete_images.*' => 'integer',
         ]);

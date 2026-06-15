@@ -8,23 +8,21 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminSeeder extends Seeder
 {
-    /**
-     * Buat akun admin default.
-     */
+    
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@wo.com'],
+            ['email' => 'admin@kembarkencana.com'],
             [
-                'name'     => 'Admin WO',
-                'email'    => 'admin@wo.com',
-                'password' => Hash::make('password'),
+                'name'     => 'Admin Kembar Kencana',
+                'email'    => 'admin@kembarkencana.com',
+                'password' => Hash::make('kembarkencana2008'),
                 'role'     => 'admin',
             ]
         );
 
         $this->command->info('✅ Admin user berhasil dibuat!');
-        $this->command->info('   Email   : admin@wo.com');
-        $this->command->info('   Password: password');
+        $this->command->info('   Email   : admin@kembarkencana.com');
+        $this->command->info('   Password: kembarkencana2008');
     }
 }

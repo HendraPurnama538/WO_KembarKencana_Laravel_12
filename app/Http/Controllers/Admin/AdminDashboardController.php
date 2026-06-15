@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Package;
 use App\Models\Portfolio;
 use App\Models\User;
+use App\Models\Vendor;
+use App\Models\DecorationPackage;
+use App\Models\Addon;
 
 class AdminDashboardController extends Controller
 {
@@ -17,6 +20,9 @@ class AdminDashboardController extends Controller
         $totalPortfolios = Portfolio::count();
         $totalPackages   = Package::count();
         $totalUsers      = User::count();
+        $totalVendors    = Vendor::count();
+        $totalDecors     = DecorationPackage::count();
+        $totalAddons     = Addon::count();
 
         $latestPortfolios = Portfolio::with('images')->latest()->take(5)->get();
         $latestPackages   = Package::latest()->take(5)->get();
@@ -25,6 +31,9 @@ class AdminDashboardController extends Controller
             'totalPortfolios',
             'totalPackages',
             'totalUsers',
+            'totalVendors',
+            'totalDecors',
+            'totalAddons',
             'latestPortfolios',
             'latestPackages'
         ));

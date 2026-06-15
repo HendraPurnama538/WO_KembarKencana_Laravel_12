@@ -30,7 +30,7 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name'   => 'required|string|max:255',
             'email'  => 'required|email|max:255|unique:users,email,' . $user->id,
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'avatar' => 'nullable|mimes:jpeg,png,jpg,webp,heic|max:2048',
         ]);
 
         if ($request->hasFile('avatar')) {
