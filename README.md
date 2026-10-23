@@ -57,3 +57,53 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+Kembar Kencana Wedding Organizer
+
+Sistem informasi berbasis web untuk Kembar Kencana Wedding Organizer, dibangun dengan Laravel 12 dan MySQL. Aplikasi ini membantu pengelolaan paket pernikahan, dekorasi, portofolio, dan informasi layanan.
+
+Fitur
+Pengelolaan paket pernikahan (tambah, ubah, hapus, lihat)
+Pengelolaan dekorasi
+Pengelolaan portofolio
+Halaman informasi untuk pengunjung
+[TAMBAHKAN fitur lain, misalnya login admin, pemesanan, upload gambar]
+Teknologi
+Laravel 12 (PHP)
+MySQL
+Blade, HTML, CSS, [Bootstrap / Tailwind CSS]
+Git & GitHub
+Cara Menjalankan
+Clone repo
+bash
+   git clone https://github.com/HendraPurnama538/WO_KembarKencana_Laravel_12.git
+   cd WO_KembarKencana_Laravel_12
+Install dependensi
+bash
+   composer install
+   npm install
+Salin file environment dan atur database
+bash
+   cp .env.example .env
+   php artisan key:generate
+
+Ubah DB_DATABASE, DB_USERNAME, dan DB_PASSWORD di file .env. 4. Jalankan migrasi (dan seeder jika ada)
+
+bash
+   php artisan migrate --seed
+Jalankan aplikasi
+bash
+   php artisan serve
+
+Buka http://127.0.0.1:8000
+
+Akun Demo
+Peran	Email	Password
+Admin	[ISI]	[ISI]
+
+Peran Saya
+Mengembangkan website, mengerjakan fitur pengelolaan data, menyusun antarmuka, dan membantu pengujian fitur.
+
+Kontak
+Hendra Purnama | purnamahendra484@gmail.com
