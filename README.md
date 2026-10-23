@@ -1,109 +1,152 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 💍 Kembar Kencana Wedding Organizer
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/images/logo.JPG" alt="Kembar Kencana Logo" width="120" style="border-radius: 50%;">
 </p>
 
-## About Laravel
+<p align="center">
+  <strong>Sistem Informasi & Manajemen Wedding Organizer Berbasis Web</strong><br>
+  Solusi digital lengkap untuk calon pengantin dan manajemen operasional Kembar Kencana Wedding Organizer.
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  <img src="https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12">
+  <img src="https://img.shields.io/badge/PHP-8.2+-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP">
+  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
+  <img src="https://img.shields.io/badge/Bootstrap-5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap">
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🌟 Tentang Aplikasi
 
-## Learning Laravel
+Aplikasi **Kembar Kencana Wedding Organizer** dirancang untuk mendigitalkan proses pemesanan dan manajemen pernikahan. Calon pengantin dapat menjelajahi paket pernikahan, menghitung estimasi biaya secara interaktif melalui fitur kalkulator, melihat inspirasi dekorasi dan portofolio terkini, hingga melakukan reservasi langsung melalui WhatsApp terintegrasi. Di sisi operasional, pihak wedding organizer memiliki panel admin komprehensif untuk mengelola pesanan, paket, vendor rekanan, venue, serta sinkronisasi feed Instagram.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📸 Preview & Tangkapan Layar
 
-## Laravel Sponsors
+<div align="center">
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 🏠 Landing Page & Kalkulator Estimasi Biaya
+<img src="screenshots/home.PNG" alt="Landing Page" width="80%">
+<p><em>Tampilan beranda yang elegan dan responsif untuk pengunjung.</em></p>
 
-### Premium Partners
+<br>
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 🧮 Fitur Simulasi & Kalkulator Pernikahan
+| Pemilihan Paket Utama | Pemilihan Tambahan (Add-on) |
+| :---: | :---: |
+| <img src="screenshots/kalkulator%20paket.png" width="100%" alt="Kalkulator Paket"> | <img src="screenshots/kalkulator%20tambahan.png" width="100%" alt="Kalkulator Tambahan"> |
 
-## Contributing
+<br>
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 📊 Dashboard & Panel Admin
+<img src="screenshots/dashboard.PNG" alt="Admin Dashboard" width="80%">
+<p><em>Panel kontrol admin untuk memantau pesanan, omset, dan data operasional.</em></p>
 
-## Code of Conduct
+<br>
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 🤝 Manajemen Vendor & Portofolio
+| Manajemen Vendor Rekanan | Galeri Portofolio & Event |
+| :---: | :---: |
+| <img src="screenshots/vendor.PNG" width="100%" alt="Vendor Management"> | <img src="screenshots/portfolio.PNG" width="100%" alt="Portfolio Management"> |
 
-## Security Vulnerabilities
+</div>
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## ✨ Fitur Utama
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 👥 Untuk Pengunjung / Calon Pengantin (Front-End)
+- **Katalog Paket Pernikahan & Dekorasi**: Informasi detail mengenai paket yang ditawarkan beserta rincian fasilitas.
+- **Kalkulator Biaya Interaktif**: Simulasi perhitungan biaya paket utama dan paket add-on secara real-time.
+- **Galeri Portofolio & Testimoni**: Menampilkan dokumentasi acara pernikahan yang telah sukses diselenggarakan.
+- **Instagram Feed Integration**: Live feed update langsung dari akun media sosial Instagram resmi.
+- **Konsultasi & Direct Booking WhatsApp**: Pengunjung dapat langsung terhubung ke admin dengan rincian paket yang dipilih.
 
+### 🛠️ Untuk Pengelola / Admin (Back-End)
+- **Ringkasan Dashboard**: Statistik total paket, pesanan masuk, vendor aktif, dan grafik performa.
+- **Manajemen Pesanan (Orders)**: Kelola status reservasi (Pending, Dikonfirmasi, Selesai, Dibatalkan) dan rincian pesanan.
+- **Manajemen Paket & Dekorasi**: Tambah, ubah, dan nonaktifkan paket pernikahan maupun dekorasi.
+- **Manajemen Venue**: Pengelolaan lokasi/gedung pernikahan yang bekerja sama.
+- **Manajemen Vendor Rekanan**: Pencatatan vendor MUA, fotografi, katering, MC, dsb.
+- **Sinkronisasi Instagram**: Pengaturan API token dan sinkronisasi berkala feed Instagram.
+- **Profil & Pengaturan Akun**: Pengelolaan keamanan akun dan data profil admin.
 
-Kembar Kencana Wedding Organizer
+---
 
-Sistem informasi berbasis web untuk Kembar Kencana Wedding Organizer, dibangun dengan Laravel 12 dan MySQL. Aplikasi ini membantu pengelolaan paket pernikahan, dekorasi, portofolio, dan informasi layanan.
+## 🛠️ Teknologi yang Digunakan
 
-Fitur
-Pengelolaan paket pernikahan (tambah, ubah, hapus, lihat)
-Pengelolaan dekorasi
-Pengelolaan portofolio
-Halaman informasi untuk pengunjung
-[TAMBAHKAN fitur lain, misalnya login admin, pemesanan, upload gambar]
-Teknologi
-Laravel 12 (PHP)
-MySQL
-Blade, HTML, CSS, [Bootstrap / Tailwind CSS]
-Git & GitHub
-Cara Menjalankan
-Clone repo
-bash
-   git clone https://github.com/HendraPurnama538/WO_KembarKencana_Laravel_12.git
-   cd WO_KembarKencana_Laravel_12
-Install dependensi
-bash
-   composer install
-   npm install
-Salin file environment dan atur database
-bash
-   cp .env.example .env
-   php artisan key:generate
+- **Backend**: [Laravel 12](https://laravel.com/) (PHP 8.2+)
+- **Database**: MySQL
+- **Frontend**: Blade Templating, HTML5, CSS3, JavaScript, Bootstrap 5 / Tailwind CSS
+- **Icons & Assets**: FontAwesome, Custom Photography & Design Assets
+- **Integrasi**: Instagram Graph API & WhatsApp Click-to-Chat
 
-Ubah DB_DATABASE, DB_USERNAME, dan DB_PASSWORD di file .env. 4. Jalankan migrasi (dan seeder jika ada)
+---
 
-bash
-   php artisan migrate --seed
-Jalankan aplikasi
-bash
-   php artisan serve
+## 🚀 Panduan Instalasi Lokal
 
-Buka http://127.0.0.1:8000
+Ikuti langkah-langkah berikut untuk menjalankan proyek ini di komputer lokal:
 
-Akun Demo
-Peran	Email	Password
-Admin	[ISI]	[ISI]
+### 1. Clone Repositori
+```bash
+git clone https://github.com/HendraPurnama538/WO_KembarKencana_Laravel_12.git
+cd WO_KembarKencana_Laravel_12
+```
 
-Peran Saya
-Mengembangkan website, mengerjakan fitur pengelolaan data, menyusun antarmuka, dan membantu pengujian fitur.
+### 2. Instal Dependensi
+```bash
+composer install
+npm install && npm run build
+```
 
-Kontak
-Hendra Purnama | purnamahendra484@gmail.com
+### 3. Konfigurasi Environment
+Salin file `.env.example` menjadi `.env` lalu buat application key:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Sesuaikan konfigurasi database Anda di file `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nama_database_anda
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+### 4. Migrasi & Seeder Database
+Jalankan migrasi tabel beserta data awal/seeder:
+```bash
+php artisan migrate --seed
+```
+
+### 5. Buat Symlink Storage
+Agar gambar portofolio dan banner dapat tampil dengan benar:
+```bash
+php artisan storage:link
+```
+
+### 6. Jalankan Server Lokal
+```bash
+php artisan serve
+```
+Akses aplikasi melalui browser di: `http://127.0.0.1:8000`
+
+---
+
+## 👨‍💻 Pengembang
+
+**Hendra Purnama**  
+- Email: [purnamahendra484@gmail.com](mailto:purnamahendra484@gmail.com)  
+- GitHub: [@HendraPurnama538](https://github.com/HendraPurnama538)
+
+---
+
+<p align="center">
+  Dibuat dengan ❤️ untuk <strong>Kembar Kencana Wedding Organizer</strong>
+</p>
