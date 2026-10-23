@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Package;
+use App\Models\Venue;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -12,13 +13,14 @@ class PackageController extends Controller
 {
     public function index(): View
     {
-        $packages = Package::orderBy('batch')->orderBy('price')->paginate(12);
+        $packages = Package::with('venue')->orderBy('batch')->orderBy('price')->paginate(12);
         return view('admin.packages.index', compact('packages'));
     }
 
     public function create(): View
     {
-        return view('admin.packages.create');
+        $venues = Venue::active()->orderBy('name')->get();
+        return view('admin.packages.create', compact('venues'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -28,6 +30,7 @@ class PackageController extends Controller
             'name'                          => 'required|string|max:255',
             'price'                         => 'required|numeric|min:0',
             'pax'                           => 'nullable|integer|min:1',
+            'venue_id'                      => 'nullable|exists:venues,id',
             'description'                   => 'required|string',
             'status'                        => 'required|in:active,inactive',
             // Dynamic facilities categories & items
@@ -46,6 +49,7 @@ class PackageController extends Controller
             'name'            => $validated['name'],
             'price'           => $validated['price'],
             'pax'             => $validated['pax'] ?? null,
+            'venue_id'        => $validated['venue_id'] ?? null,
             'description'     => $validated['description'],
             'facilities'      => $facilitiesText,
             'facilities_json' => $facilitiesJson,
@@ -58,7 +62,8 @@ class PackageController extends Controller
 
     public function edit(Package $package): View
     {
-        return view('admin.packages.edit', compact('package'));
+        $venues = Venue::active()->orderBy('name')->get();
+        return view('admin.packages.edit', compact('package', 'venues'));
     }
 
     public function update(Request $request, Package $package): RedirectResponse
@@ -68,6 +73,7 @@ class PackageController extends Controller
             'name'                          => 'required|string|max:255',
             'price'                         => 'required|numeric|min:0',
             'pax'                           => 'nullable|integer|min:1',
+            'venue_id'                      => 'nullable|exists:venues,id',
             'description'                   => 'required|string',
             'status'                        => 'required|in:active,inactive',
             'fac_category'                  => 'nullable|array',
@@ -85,6 +91,7 @@ class PackageController extends Controller
             'name'            => $validated['name'],
             'price'           => $validated['price'],
             'pax'             => $validated['pax'] ?? null,
+            'venue_id'        => $validated['venue_id'] ?? null,
             'description'     => $validated['description'],
             'facilities'      => $facilitiesText,
             'facilities_json' => $facilitiesJson,

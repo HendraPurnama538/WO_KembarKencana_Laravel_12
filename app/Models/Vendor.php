@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class Vendor extends Model
 {
     /**
@@ -45,6 +48,11 @@ class Vendor extends Model
         'image',
         'description',
         'instagram_url',
+        'instagram_username',
+        'instagram_user_id',
+        'instagram_pic_url',
+        'instagram_profile_pic',
+        'ig_pic_synced_at',
         'status',
     ];
 
@@ -73,20 +81,42 @@ class Vendor extends Model
     }
 
     /**
-     * URL gambar vendor (support public/images dan storage).
+     * URL foto profil Instagram (fallback ke instagram_pic_url)
+     */
+    public function getInstagramProfilePicUrlAttribute(): ?string
+    {
+        return $this->instagram_profile_pic ?? $this->instagram_pic_url;
+    }
+
+    /**
+     * URL gambar vendor (support instagram profile pic, public/images, dan storage).
      */
     public function getImageUrlAttribute(): string
     {
-        if (!$this->image) {
-            return asset('images/logo.JPG'); // fallback
+        // 1. Gambar manual dari storage / public
+        if ($this->image) {
+            if (filter_var($this->image, FILTER_VALIDATE_URL)) {
+                return $this->image;
+            }
+            if (strpos($this->image, 'images/') === 0) {
+                return asset($this->image);
+            }
+            return asset('storage/' . $this->image);
         }
 
-        // Jika path dimulai dengan 'images/' → ada di folder public
-        if (str_starts_with($this->image, 'images/')) {
-            return asset($this->image);
+        // 2. Foto profil dari Instagram (instagram_profile_pic atau instagram_pic_url)
+        $igPic = $this->instagram_profile_pic ?? $this->instagram_pic_url;
+        if ($igPic) {
+            if (filter_var($igPic, FILTER_VALIDATE_URL)) {
+                return $igPic;
+            }
+            if (strpos($igPic, 'images/') === 0) {
+                return asset($igPic);
+            }
+            return asset('storage/' . $igPic);
         }
 
-        // Jika di-upload ke storage
-        return asset('storage/' . $this->image);
+        // 3. Fallback default logo
+        return asset('images/logo.JPG');
     }
 }

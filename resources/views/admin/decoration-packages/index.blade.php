@@ -19,7 +19,7 @@
     ];
 @endphp
 
-<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+<div class="max-w-5xl bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
@@ -48,15 +48,15 @@
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wide">
-                        <th class="px-5 py-3 text-left font-semibold w-12">#</th>
-                        <th class="px-5 py-3 text-left font-semibold w-20">Foto</th>
-                        <th class="px-5 py-3 text-left font-semibold">Nama Paket</th>
-                        <th class="px-5 py-3 text-left font-semibold">Kategori</th>
-                        <th class="px-5 py-3 text-left font-semibold">Tipe Lokasi</th>
-                        <th class="px-5 py-3 text-left font-semibold">Harga</th>
-                        <th class="px-5 py-3 text-center font-semibold">Status</th>
-                        <th class="px-5 py-3 text-center font-semibold">Aksi</th>
+                    <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wide border-b border-slate-100">
+                        <th class="px-4 py-3 text-left font-semibold w-10">#</th>
+                        <th class="px-3 py-3 text-left font-semibold w-16">Foto</th>
+                        <th class="px-4 py-3 text-left font-semibold min-w-[180px]">Nama Paket</th>
+                        <th class="px-3 py-3 text-left font-semibold w-28 whitespace-nowrap">Kategori</th>
+                        <th class="px-3 py-3 text-left font-semibold w-28 whitespace-nowrap">Tipe Lokasi</th>
+                        <th class="px-3 py-3 text-left font-semibold w-32 whitespace-nowrap">Harga</th>
+                        <th class="px-3 py-3 text-center font-semibold w-24 whitespace-nowrap">Status</th>
+                        <th class="px-4 py-3 text-center font-semibold w-32 whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
@@ -64,19 +64,19 @@
                     <tr class="hover:bg-slate-50/70 transition-colors">
 
                         {{-- Nomor --}}
-                        <td class="px-5 py-3 text-slate-400 font-mono text-xs">
+                        <td class="px-4 py-3 text-slate-400 font-mono text-xs">
                             {{ $packages->firstItem() + $loop->index }}
                         </td>
 
                         {{-- Thumbnail --}}
-                        <td class="px-5 py-3">
+                        <td class="px-3 py-3">
                             @if($pkg->image)
                                 <img src="{{ asset('storage/' . $pkg->image) }}"
                                      alt="{{ $pkg->name }}"
-                                     class="w-14 h-14 object-cover rounded-lg border border-slate-100 shadow-sm">
+                                     class="w-12 h-12 object-cover rounded-lg border border-slate-100 shadow-sm">
                             @else
-                                <div class="w-14 h-14 bg-slate-100 rounded-lg flex items-center justify-center">
-                                    <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
@@ -85,15 +85,15 @@
                         </td>
 
                         {{-- Nama --}}
-                        <td class="px-5 py-3">
-                            <p class="font-semibold text-slate-800">{{ $pkg->name }}</p>
+                        <td class="px-4 py-3">
+                            <p class="font-semibold text-slate-800 leading-snug">{{ $pkg->name }}</p>
                             @if($pkg->description)
-                                <p class="text-xs text-slate-400 mt-0.5 truncate max-w-xs">{{ Str::limit($pkg->description, 55) }}</p>
+                                <p class="text-xs text-slate-400 mt-0.5 truncate max-w-sm">{{ Str::limit($pkg->description, 55) }}</p>
                             @endif
                         </td>
 
                         {{-- Kategori --}}
-                        <td class="px-5 py-3">
+                        <td class="px-3 py-3 whitespace-nowrap">
                             <span class="inline-flex items-center text-xs font-semibold px-2.5 py-1 rounded-lg
                                 {{ $categoryColors[$pkg->category] ?? 'bg-slate-50 text-slate-600' }}">
                                 {{ $pkg->category }}
@@ -101,23 +101,23 @@
                         </td>
 
                         {{-- Tipe Lokasi --}}
-                        <td class="px-5 py-3">
+                        <td class="px-3 py-3 whitespace-nowrap">
                             @if($pkg->location_type)
-                                <span class="text-xs text-slate-500">{{ $pkg->location_type }}</span>
+                                <span class="text-xs text-slate-600 font-medium">{{ $pkg->location_type }}</span>
                             @else
                                 <span class="text-xs text-slate-300">—</span>
                             @endif
                         </td>
 
                         {{-- Harga --}}
-                        <td class="px-5 py-3 whitespace-nowrap">
+                        <td class="px-3 py-3 whitespace-nowrap">
                             <span class="inline-flex items-center bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-lg">
                                 Rp {{ number_format($pkg->price, 0, ',', '.') }}
                             </span>
                         </td>
 
                         {{-- Status + Toggle --}}
-                        <td class="px-5 py-3 text-center">
+                        <td class="px-3 py-3 text-center whitespace-nowrap">
                             <form method="POST"
                                   action="{{ route('admin.decoration-packages.toggle-status', $pkg) }}"
                                   class="inline">
@@ -125,7 +125,7 @@
                                 @method('PATCH')
                                 <button type="submit"
                                     title="{{ $pkg->isActive() ? 'Klik untuk nonaktifkan' : 'Klik untuk aktifkan' }}"
-                                    class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors
+                                    class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-lg transition-colors
                                         {{ $pkg->isActive()
                                             ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
                                             : 'bg-red-50 text-red-600 hover:bg-red-100' }}">
@@ -136,15 +136,15 @@
                         </td>
 
                         {{-- Aksi --}}
-                        <td class="px-5 py-3">
-                            <div class="flex items-center justify-center gap-2">
+                        <td class="px-4 py-3 text-center whitespace-nowrap">
+                            <div class="inline-flex items-center justify-center gap-1.5">
                                 <a href="{{ route('admin.decoration-packages.edit', $pkg) }}"
-                                   class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-sky-50 text-sky-600 hover:bg-sky-100 rounded-lg transition-colors">
+                                   class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium bg-sky-50 text-sky-600 hover:bg-sky-100 rounded-lg transition-colors">
                                     Edit
                                 </a>
                                 <button type="button"
                                     onclick="hapusData('{{ route('admin.decoration-packages.destroy', $pkg) }}', 'Hapus paket &ldquo;{{ addslashes($pkg->name) }}&rdquo;?')"
-                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors">
+                                    class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors">
                                     Hapus
                                 </button>
                             </div>

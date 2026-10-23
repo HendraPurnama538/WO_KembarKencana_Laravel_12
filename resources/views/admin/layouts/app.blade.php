@@ -6,6 +6,11 @@
     <meta name="description" content="Admin Panel Wedding Organizer — Kelola paket, portofolio, dan user dengan mudah.">
     <title>@yield('title', 'Dashboard') — Admin WO</title>
 
+    {{-- Favicon --}}
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.JPG') }}">
+    <link rel="shortcut icon" href="{{ asset('images/logo.JPG') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.JPG') }}">
+
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -57,10 +62,37 @@
             to   { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── Responsive ───────────────────────────────────────────────── */
+        /* ── Responsive & Compact Admin Tables ────────────────────────── */
         .flex-1 { min-width: 0; }
         main { overflow-x: hidden !important; }
-        table { max-width: 100%; }
+        
+        table {
+            max-width: 100%;
+            font-size: 0.8125rem;
+        }
+        table thead th {
+            padding: 0.6rem 0.85rem !important;
+            font-size: 0.6875rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.05em !important;
+            text-transform: uppercase !important;
+            color: #64748b !important;
+            background-color: #f8fafc !important;
+        }
+        table tbody td {
+            padding: 0.55rem 0.85rem !important;
+            font-size: 0.8125rem !important;
+            vertical-align: middle !important;
+            line-height: 1.4;
+        }
+        table tbody tr:hover {
+            background-color: rgba(248, 250, 252, 0.8) !important;
+        }
+        table img.object-cover {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 8px !important;
+        }
 
         .table-responsive-wrap {
             width: 100%;
@@ -70,10 +102,13 @@
 
         @media (max-width: 768px) {
             .lg\:ml-64 { margin-left: 0 !important; }
-            main { padding: 1rem !important; }
+            main { padding: 0.875rem !important; min-width: 0 !important; }
             .grid-cols-2, .grid-cols-3, .grid-cols-4 {
                 grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
             }
+        }
+        @media (max-width: 400px) {
+            main { padding: 0.625rem !important; }
         }
     </style>
 </head>
@@ -177,7 +212,40 @@
                 Vendor & Partner
             </a>
 
-            {{-- User --}}
+            {{-- Postingan Instagram --}}
+            <a href="{{ route('admin.instagram.index') }}"
+               class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 text-sm font-medium
+                {{ request()->routeIs('admin.instagram*') ? 'active' : '' }}">
+                <svg class="sidebar-icon w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Feeds Instagram
+            </a>
+
+            {{-- Venue --}}
+            <a href="{{ route('admin.venues.index') }}"
+               class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 text-sm font-medium
+                {{ request()->routeIs('admin.venues*') ? 'active' : '' }}">
+                 <svg class="sidebar-icon w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                         d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                 </svg>
+                 Venue
+            </a>
+
+            {{-- Order / Pesanan --}}
+            <a href="{{ route('admin.orders.index') }}"
+               class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 text-sm font-medium
+                {{ request()->routeIs('admin.orders*') ? 'active' : '' }}">
+                 <svg class="sidebar-icon w-5 h-5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+                         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                 </svg>
+                 Order / Pesanan
+            </a>
+
+            {{-- Pengunjung (User) --}}
             <a href="{{ route('admin.users.index') }}"
                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 text-sm font-medium
                 {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
@@ -217,17 +285,17 @@
         {{-- User Info di Sidebar --}}
         <div class="px-4 py-4 border-t border-white/10">
             <div class="flex items-center gap-3">
-                @if(auth()->user()->avatar)
+                @if(auth()->user()?->avatar)
                     <img src="{{ Storage::url(auth()->user()->avatar) }}"
                          alt="Avatar" class="w-9 h-9 rounded-xl object-cover ring-2 ring-rose-500/30 flex-shrink-0">
                 @else
                     <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-400 to-pink-600 flex items-center justify-center text-white text-xs font-bold shadow-lg flex-shrink-0">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        {{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}
                     </div>
                 @endif
                 <div class="flex-1 min-w-0">
-                    <p class="text-white text-sm font-semibold truncate">{{ auth()->user()->name }}</p>
-                    <p class="text-slate-500 text-xs truncate">{{ auth()->user()->email }}</p>
+                    <p class="text-white text-sm font-semibold truncate">{{ auth()->user()?->name ?? 'Admin' }}</p>
+                    <p class="text-slate-500 text-xs truncate">{{ auth()->user()?->email ?? 'admin@kembarkencana.com' }}</p>
                 </div>
             </div>
             <form method="POST" action="{{ route('logout') }}" class="mt-3">
@@ -287,17 +355,17 @@
                 {{-- User avatar --}}
                 <a href="{{ route('admin.profile.show') }}"
                    class="flex items-center gap-2 group px-2 py-1.5 rounded-xl hover:bg-slate-50 transition-all">
-                    @if(auth()->user()->avatar)
+                    @if(auth()->user()?->avatar)
                         <img src="{{ Storage::url(auth()->user()->avatar) }}"
                              alt="Avatar" class="w-8 h-8 rounded-lg object-cover ring-2 ring-rose-100 flex-shrink-0">
                     @else
                         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-rose-400 to-pink-600 flex items-center justify-center text-white text-xs font-bold shadow-sm flex-shrink-0">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            {{ strtoupper(substr(auth()->user()?->name ?? 'A', 0, 1)) }}
                         </div>
                     @endif
                     <div class="hidden sm:block">
                         <span class="block text-sm font-semibold text-slate-700 group-hover:text-rose-600 transition-colors leading-tight">
-                            {{ auth()->user()->name }}
+                            {{ auth()->user()?->name ?? 'Admin' }}
                         </span>
                         <span class="block text-xs text-slate-400 font-medium" style="font-size:10px;">Administrator</span>
                     </div>

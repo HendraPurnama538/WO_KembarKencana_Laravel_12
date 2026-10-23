@@ -15,7 +15,7 @@
     ];
 @endphp
 
-<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+<div class="max-w-5xl bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">

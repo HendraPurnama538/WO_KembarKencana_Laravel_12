@@ -99,26 +99,73 @@
                     </svg>
                     <div>
                         <p class="text-sm text-slate-500">Klik untuk upload foto profil</p>
-                        <p class="text-xs text-slate-400">JPG, PNG, WEBP — Max 2MB</p>
+                        <p class="text-xs text-slate-400">JPG, PNG, WEBP, HEIC — Max 2MB</p>
                     </div>
                     <input id="avatar" name="avatar" type="file"
-                           accept="image/jpeg,image/png,image/jpg,image/webp" class="hidden">
+                           accept="image/jpeg,image/png,image/jpg,image/webp,.heic,image/heic" class="hidden">
                 </label>
                 @error('avatar')
                     <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                 @enderror
             </div>
 
+            {{-- Divider & Logo Website Section --}}
+            <div class="border-t border-slate-100 pt-5 space-y-3">
+                <div>
+                    <label class="block text-sm font-bold text-slate-800">Logo Website (Logo Kembar Kencana)</label>
+                    <p class="text-xs text-slate-400 mt-0.5">Logo ini akan otomatis diperbarui di seluruh website: Landing Page, Admin Sidebar, Dashboard, Favicon, dan Halaman Login.</p>
+                </div>
+
+                {{-- Preview Active Logo --}}
+                <div class="flex items-center gap-4 p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                    <img id="app-logo-preview" src="{{ app_logo_url() }}" alt="Logo Website Saat Ini"
+                         class="w-16 h-16 rounded-xl object-cover border border-slate-200 shadow-sm bg-white p-1 flex-shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-xs font-bold text-slate-700">Logo Aktif Website</p>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Pilih foto/gambar logo baru di bawah untuk mengganti logo secara menyeluruh.</p>
+                    </div>
+                </div>
+
+                {{-- Input Logo --}}
+                <label for="app_logo"
+                    class="flex items-center gap-3 w-full px-4 py-3.5 border-2 border-dashed border-amber-300 bg-amber-50/40
+                           rounded-xl cursor-pointer hover:border-amber-400 hover:bg-amber-50 transition-colors">
+                    <svg class="w-6 h-6 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold text-slate-700">Klik untuk Pilih / Upload Logo Website Baru</p>
+                        <p class="text-xs text-slate-400">PNG, JPG, WEBP, SVG, HEIC — Maksimal 4MB</p>
+                    </div>
+                    <input id="app_logo" name="app_logo" type="file"
+                           accept="image/jpeg,image/png,image/jpg,image/webp,image/svg+xml,.heic,image/heic" class="hidden" onchange="previewAppLogo(this)">
+                </label>
+                @error('app_logo')
+                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                @enderror
+            </div>
+
             {{-- Actions --}}
-            <div class="flex items-center gap-3 pt-2">
-                <button type="submit"
-                    class="bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
-                    Simpan Perubahan
-                </button>
-                <a href="{{ route('admin.security.show') }}"
-                   class="text-sm text-slate-500 hover:text-slate-700 px-5 py-2.5 rounded-xl hover:bg-slate-100 transition-colors">
-                    Ganti Password →
-                </a>
+            <div class="flex items-center justify-between gap-3 pt-4 border-t border-slate-100">
+                <div class="flex items-center gap-2">
+                    <button type="submit"
+                        class="bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
+                        Simpan Perubahan
+                    </button>
+                    <a href="{{ route('admin.security.show') }}"
+                       class="text-sm text-slate-500 hover:text-slate-700 px-4 py-2.5 rounded-xl hover:bg-slate-100 transition-colors">
+                        Ganti Password →
+                    </a>
+                </div>
+
+                {{-- Reset Logo Button --}}
+                <form method="POST" action="{{ route('admin.profile.reset-logo') }}" class="inline" onsubmit="return confirm('Kembalikan logo website ke logo default?')">
+                    @csrf
+                    <button type="submit" type="button" class="text-xs font-medium text-slate-500 hover:text-amber-700 bg-slate-50 hover:bg-amber-50 border border-slate-200 px-3 py-2 rounded-xl transition-colors">
+                        Reset Logo Default
+                    </button>
+                </form>
             </div>
         </form>
     </div>
@@ -139,6 +186,19 @@
         };
         reader.readAsDataURL(file);
     });
+
+    function previewAppLogo(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.getElementById('app-logo-preview');
+                if (img) {
+                    img.src = e.target.result;
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
 </script>
 
 @endsection

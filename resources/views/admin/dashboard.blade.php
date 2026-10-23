@@ -1,489 +1,633 @@
 @extends('admin.layouts.app')
 
 @section('title', 'Dashboard')
-@section('subtitle', 'Ikhtisar statistik dan data terbaru Wedding Organizer')
+@section('subtitle', 'Ringkasan statistik pesanan & data wedding organizer')
 
 @section('content')
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
 <style>
-    /* ── Stat Card ─────────────────────────────────────────────────── */
-    .stat-card {
-        background: white;
-        border: 1px solid #f1f5f9;
-        border-radius: 16px;
-        padding: 20px 24px;
-        position: relative;
+    /* ── Dark override on layout ──────────────────────────────────── */
+    body { background: #1a1d2e !important; }
+    .lg\:ml-64 > header { background: rgba(26,29,46,.95) !important; backdrop-filter: blur(12px); border-color: rgba(255,255,255,.05) !important; }
+    .lg\:ml-64 > header h2, .lg\:ml-64 > header .text-slate-700 { color: #e2e8f0 !important; }
+    .lg\:ml-64 > header p, .lg\:ml-64 > header .text-slate-400, .lg\:ml-64 > header .text-slate-600 { color: #64748b !important; }
+    .lg\:ml-64 > header .bg-slate-50 { background: rgba(255,255,255,.06) !important; border-color: rgba(255,255,255,.06) !important; }
+    .lg\:ml-64 > header .hover\:bg-slate-50:hover { background: rgba(255,255,255,.08) !important; }
+    .lg\:ml-64 > header .text-rose-400 { color: #fb7185 !important; }
+    .lg\:ml-64 > footer { background: #1a1d2e !important; border-color: rgba(255,255,255,.05) !important; color: #3b3f54 !important; }
+
+    /* ═══ ROW 1: Hero + 4 Metrics (Mobile-first) ═══════════════════ */
+    .row1 {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    /* ═══ ROW 2: Donut + Bar (Mobile-first) ═════════════════════════ */
+    .row2 {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* ═══ Summary pills inside chart card ═══════════════════════════ */
+    .sum-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    /* ═══ Tablet small (≥480px) ═════════════════════════════════════ */
+    @media (min-width: 480px) {
+        .row1 { gap: 14px; margin-bottom: 14px; }
+        .metrics-grid { gap: 10px; }
+        .row2 { gap: 14px; }
+        .sum-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+    }
+
+    /* ═══ Tablet (≥600px) ═══════════════════════════════════════════ */
+    @media (min-width: 600px) {
+        .metrics-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+    }
+
+    /* ═══ Tablet landscape (≥768px) ═════════════════════════════════ */
+    @media (min-width: 768px) {
+        .metrics-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .row2 {
+            grid-template-columns: 280px 1fr;
+        }
+    }
+
+    /* ═══ Desktop (≥992px) ══════════════════════════════════════════ */
+    @media (min-width: 992px) {
+        .row1 {
+            grid-template-columns: 300px 1fr;
+        }
+        .metrics-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        .row2 {
+            grid-template-columns: 340px 1fr;
+        }
+    }
+
+    /* ═══ Large desktop (≥1200px) ═══════════════════════════════════ */
+    @media (min-width: 1200px) {
+        .row1 {
+            grid-template-columns: 340px 1fr;
+        }
+        .row2 {
+            grid-template-columns: 360px 1fr;
+        }
+    }
+
+    /* ── Card base ─────────────────────────────────────────────────── */
+    .dk {
+        background: #222539;
+        border-radius: 14px;
+        border: 1px solid rgba(255,255,255,.05);
         overflow: hidden;
-        transition: all .3s cubic-bezier(.4,0,.2,1);
-        text-decoration: none;
-        display: block;
+        min-width: 0;
     }
-    .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 3px;
-        opacity: 0;
-        transition: opacity .3s ease;
-    }
-    .stat-card:hover::before { opacity: 1; }
-    .stat-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 16px 40px -12px rgba(0,0,0,.07);
-        border-color: transparent;
-    }
-    .stat-card .icon-wrap {
-        width: 44px; height: 44px;
-        border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        transition: all .3s ease;
-        flex-shrink: 0;
-    }
-    .stat-card:hover .icon-wrap { transform: scale(1.05); }
-    .stat-card .bg-glyph {
-        position: absolute;
-        bottom: -8px; right: -8px;
-        width: 80px; height: 80px;
-        opacity: .04;
-        transition: opacity .3s ease;
-    }
-    .stat-card:hover .bg-glyph { opacity: .08; }
 
-    /* Card color variants */
-    .stat-violet::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
-    .stat-violet .icon-wrap { background: #ede9fe; color: #7c3aed; }
-    .stat-violet:hover .icon-wrap { background: #8b5cf6; color: white; box-shadow: 0 6px 20px rgba(139,92,246,.3); }
-
-    .stat-rose::before { background: linear-gradient(90deg, #f43f5e, #fb7185); }
-    .stat-rose .icon-wrap { background: #ffe4e6; color: #e11d48; }
-    .stat-rose:hover .icon-wrap { background: #f43f5e; color: white; box-shadow: 0 6px 20px rgba(244,63,94,.3); }
-
-    .stat-emerald::before { background: linear-gradient(90deg, #10b981, #34d399); }
-    .stat-emerald .icon-wrap { background: #d1fae5; color: #059669; }
-    .stat-emerald:hover .icon-wrap { background: #10b981; color: white; box-shadow: 0 6px 20px rgba(16,185,129,.3); }
-
-    .stat-sky::before { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
-    .stat-sky .icon-wrap { background: #e0f2fe; color: #0284c7; }
-    .stat-sky:hover .icon-wrap { background: #0ea5e9; color: white; box-shadow: 0 6px 20px rgba(14,165,233,.3); }
-
-    .stat-amber::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
-    .stat-amber .icon-wrap { background: #fef3c7; color: #d97706; }
-    .stat-amber:hover .icon-wrap { background: #f59e0b; color: white; box-shadow: 0 6px 20px rgba(245,158,11,.3); }
-
-    .stat-slate::before { background: linear-gradient(90deg, #64748b, #94a3b8); }
-    .stat-slate .icon-wrap { background: #f1f5f9; color: #475569; }
-    .stat-slate:hover .icon-wrap { background: #64748b; color: white; box-shadow: 0 6px 20px rgba(100,116,139,.3); }
-
-    /* ── Counter animation ─────────────────────────────────────────── */
-    .counter-num { font-variant-numeric: tabular-nums; }
-
-    /* ── Section card ──────────────────────────────────────────────── */
-    .section-card {
-        background: white;
-        border: 1px solid #f1f5f9;
-        border-radius: 16px;
+    /* ── Hero card ─────────────────────────────────────────────────── */
+    .hero-card {
+        background: linear-gradient(135deg, #28254a 0%, #1e1b4b 60%, #2d2870 100%);
+        border-radius: 14px;
+        border: 1px solid rgba(139,92,246,.12);
+        padding: 16px;
+        position: relative;
         overflow: hidden;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
+        min-width: 0;
+    }
+    @media (min-width: 480px) {
+        .hero-card { padding: 20px; }
+    }
+    .hero-card::before {
+        content: '';
+        position: absolute;
+        width: 120px; height: 120px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(244,63,94,.18), transparent 70%);
+        top: -40px; right: -20px;
+        pointer-events: none;
+    }
+    @media (min-width: 480px) {
+        .hero-card::before { width: 150px; height: 150px; top: -50px; right: -30px; }
     }
 
-    /* ── Row hover ─────────────────────────────────────────────────── */
-    .list-row {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        padding: 12px 20px;
-        transition: background .2s ease;
+    /* ── Hero card text responsive ────────────────────────────────── */
+    .hero-title {
+        font-size: 14px; font-weight: 800; color: #fff; line-height: 1.3; margin: 0;
+        word-break: break-word;
     }
-    .list-row:hover { background: #fafafa; }
-    .list-row + .list-row { border-top: 1px solid #f8fafc; }
-
-    /* ── Action button ─────────────────────────────────────────────── */
-    .action-btn {
-        opacity: 0;
-        width: 30px; height: 30px;
-        display: flex; align-items: center; justify-content: center;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        background: white;
-        color: #94a3b8;
-        transition: all .2s ease;
-        flex-shrink: 0;
+    .hero-subtitle {
+        font-size: 11px; color: #9b8ec4; margin-top: 3px;
     }
-    .list-row:hover .action-btn { opacity: 1; }
-    .action-btn:hover {
-        color: #f43f5e;
-        border-color: #fecdd3;
-        background: #fff1f2;
+    .hero-amount {
+        font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.5px; line-height: 1; margin: 0;
+        word-break: break-word;
     }
-
-    /* ── Greeting animation ────────────────────────────────────────── */
-    .greeting-text {
-        background: linear-gradient(135deg, #1e293b 0%, #475569 50%, #f43f5e 100%);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        animation: shimmerText 4s ease infinite;
+    .hero-percent {
+        font-size: 11px; color: #7c6fad; margin-top: 4px;
     }
-    @keyframes shimmerText {
-        0%, 100% { background-position: 0% center; }
-        50% { background-position: 100% center; }
-    }
-
-    /* ── Quick action button ───────────────────────────────────────── */
-    .quick-action {
-        display: inline-flex; align-items: center; gap: 8px;
-        padding: 8px 14px;
-        border-radius: 12px;
-        background: white;
-        border: 1px solid #f1f5f9;
-        color: #475569;
-        font-size: 13px;
-        font-weight: 600;
-        transition: all .25s ease;
+    .hero-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        margin-top: 10px; padding: 7px 14px; border-radius: 8px;
+        font-size: 11px; font-weight: 700; color: #fff;
+        background: linear-gradient(135deg,#f43f5e,#e11d48);
+        box-shadow: 0 4px 14px rgba(244,63,94,.3);
         text-decoration: none;
     }
-    .quick-action:hover {
-        background: #fff1f2;
-        border-color: #fecdd3;
-        color: #e11d48;
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(244,63,94,.08);
+    @media (min-width: 480px) {
+        .hero-title { font-size: 15px; }
+        .hero-amount { font-size: 24px; }
+        .hero-btn { margin-top: 12px; padding: 8px 16px; }
     }
 
-    /* ── Stagger animation ─────────────────────────────────────────── */
-    .stagger > * {
-        opacity: 0;
-        animation: staggerIn .5s cubic-bezier(.4,0,.2,1) forwards;
+    /* ── Metric card ──────────────────────────────────────────────── */
+    .m-card {
+        background: #222539;
+        border: 1px solid rgba(255,255,255,.05);
+        border-radius: 12px;
+        padding: 12px 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-decoration: none !important;
+        color: inherit !important;
+        transition: all .2s ease;
+        min-width: 0;
+        overflow: hidden;
     }
-    .stagger > *:nth-child(1) { animation-delay: .05s; }
-    .stagger > *:nth-child(2) { animation-delay: .1s; }
-    .stagger > *:nth-child(3) { animation-delay: .15s; }
-    .stagger > *:nth-child(4) { animation-delay: .2s; }
-    .stagger > *:nth-child(5) { animation-delay: .25s; }
-    .stagger > *:nth-child(6) { animation-delay: .3s; }
-    @keyframes staggerIn {
-        from { opacity: 0; transform: translateY(8px); }
-        to   { opacity: 1; transform: translateY(0); }
+    @media (min-width: 480px) {
+        .m-card { padding: 14px 16px; }
     }
+    .m-card:hover {
+        border-color: rgba(255,255,255,.1);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,.15);
+    }
+    /* On touch devices, disable hover transform to prevent sticky state */
+    @media (hover: none) {
+        .m-card:hover { transform: none; box-shadow: none; }
+    }
+
+    /* ── Metric card text responsive ──────────────────────────────── */
+    .m-card .m-icon-wrap {
+        width: 30px; height: 30px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .m-card .m-icon-wrap svg { width: 14px; height: 14px; }
+    .m-card .m-value {
+        font-size: 18px; font-weight: 800; color: #fff; line-height: 1; margin: 0;
+    }
+    .m-card .m-label {
+        font-size: 9px; font-weight: 500; color: #535773; margin-top: 3px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    @media (min-width: 480px) {
+        .m-card .m-icon-wrap { width: 34px; height: 34px; }
+        .m-card .m-icon-wrap svg { width: 16px; height: 16px; }
+        .m-card .m-value { font-size: 20px; }
+        .m-card .m-label { font-size: 10px; margin-top: 4px; }
+    }
+
+    /* ── Sparkline bars ───────────────────────────────────────────── */
+    .spk { display: flex; align-items: flex-end; gap: 2px; height: 18px; margin-top: 6px; }
+    .spk span { width: 4px; border-radius: 2px; min-height: 3px; flex: 1; max-width: 6px; }
+    @media (min-width: 480px) {
+        .spk { gap: 3px; height: 22px; margin-top: 8px; }
+        .spk span { width: 5px; }
+    }
+
+    /* ── Donut card responsive ────────────────────────────────────── */
+    .donut-card-inner { padding: 16px; }
+    @media (min-width: 480px) {
+        .donut-card-inner { padding: 20px; }
+    }
+
+    /* ── Donut legend ─────────────────────────────────────────────── */
+    .lg-row { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+    .lg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .lg-label { flex: 1; font-size: 11px; font-weight: 500; color: #94a3b8; min-width: 0; }
+    .lg-pct { font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    @media (min-width: 480px) {
+        .lg-row { gap: 10px; padding: 5px 0; }
+        .lg-dot { width: 10px; height: 10px; }
+        .lg-label { font-size: 12px; }
+        .lg-pct { font-size: 12px; }
+    }
+
+    /* ── Bar chart container responsive ───────────────────────────── */
+    .bar-card-inner { padding: 16px; display: flex; flex-direction: column; min-width: 0; }
+    @media (min-width: 480px) {
+        .bar-card-inner { padding: 20px; }
+    }
+    .bar-chart-wrap {
+        flex: 1; min-height: 180px; position: relative; min-width: 0;
+    }
+    @media (min-width: 768px) {
+        .bar-chart-wrap { min-height: 200px; }
+    }
+
+    /* ── Summary pill responsive ──────────────────────────────────── */
+    .sum-pill {
+        background: #1a1d2e;
+        border: 1px solid rgba(255,255,255,.05);
+        border-radius: 10px;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
+    .sum-icon {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .sum-icon svg { width: 14px; height: 14px; }
+    .sum-pill .sum-label {
+        font-size: 9px; font-weight: 500; color: #535773; margin: 0;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sum-pill .sum-value {
+        font-size: 15px; font-weight: 800; color: #fff; margin: 0; line-height: 1.2;
+        word-break: break-word;
+    }
+    @media (min-width: 480px) {
+        .sum-pill { border-radius: 12px; padding: 12px 14px; gap: 12px; }
+        .sum-icon { width: 38px; height: 38px; }
+        .sum-icon svg { width: 16px; height: 16px; }
+        .sum-pill .sum-label { font-size: 10px; }
+        .sum-pill .sum-value { font-size: 18px; }
+    }
+
+    /* ── Chart header responsive ──────────────────────────────────── */
+    .chart-header {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 12px; gap: 8px; flex-wrap: wrap;
+    }
+    .chart-title {
+        font-size: 13px; font-weight: 700; color: #fff; margin: 0;
+    }
+    .chart-link {
+        font-size: 10px; font-weight: 600; color: #818cf8; text-decoration: none;
+        white-space: nowrap;
+    }
+    .chart-year {
+        font-size: 10px; font-weight: 500; color: #535773; white-space: nowrap;
+    }
+    @media (min-width: 480px) {
+        .chart-header { margin-bottom: 16px; }
+        .chart-title { font-size: 14px; }
+        .chart-year { font-size: 11px; }
+    }
+
+    /* ── Donut wrapper responsive ─────────────────────────────────── */
+    .donut-wrap {
+        display: flex; justify-content: center; margin-bottom: 14px;
+    }
+    .donut-container {
+        position: relative; width: 120px; height: 120px;
+    }
+    .donut-center-pct {
+        font-size: 18px; font-weight: 800; color: #fff;
+    }
+    .donut-center-label {
+        font-size: 9px; font-weight: 500; color: #535773;
+    }
+    @media (min-width: 480px) {
+        .donut-wrap { margin-bottom: 16px; }
+        .donut-container { width: 150px; height: 150px; }
+        .donut-center-pct { font-size: 22px; }
+        .donut-center-label { font-size: 10px; }
+    }
+
+    /* ── Animations ───────────────────────────────────────────────── */
+    .dk-in {
+        opacity: 0; transform: translateY(12px);
+        animation: dIn .5s cubic-bezier(.16,1,.3,1) forwards;
+    }
+    .row2.dk-in { animation-delay: .08s; }
+    @keyframes dIn { to { opacity: 1; transform: translateY(0); } }
 </style>
 
-{{-- ── Greeting Header ────────────────────────────────────────────────── --}}
-<div class="mb-8">
-    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div>
-            <p class="text-sm font-semibold text-slate-400 mb-1">
+@php
+    $h = (int)now()->format('H');
+    $greet = $h<12 ? 'Selamat Pagi' : ($h<15 ? 'Selamat Siang' : ($h<18 ? 'Selamat Sore' : 'Selamat Malam'));
+    $fS = function($n) {
+        if ($n>=1e9) return 'Rp '.number_format($n/1e9,1,',','.').'M';
+        if ($n>=1e6) return 'Rp '.number_format($n/1e6,1,',','.').'Jt';
+        if ($n>=1e3) return 'Rp '.number_format($n/1e3,0,',','.').'Rb';
+        return 'Rp '.number_format($n,0,',','.');
+    };
+    $pctS = $totalOrders>0 ? round(($ordersSelesai/$totalOrders)*100) : 0;
+    $pctM = $totalOrders>0 ? round(($ordersMenunggu/$totalOrders)*100) : 0;
+    $pctK = $totalOrders>0 ? round(($ordersDikonfirmasi/$totalOrders)*100) : 0;
+    $pctB = $totalOrders>0 ? round(($ordersDibatalkan/$totalOrders)*100) : 0;
+@endphp
+
+{{-- ═══════════════════════════════════════════════════════════════════════ --}}
+{{-- ROW 1 :  HERO CARD  +  4 METRIC CARDS                                   --}}
+{{-- ═══════════════════════════════════════════════════════════════════════ --}}
+<div class="row1 dk-in">
+
+    {{-- Hero Welcome --}}
+    <div class="hero-card">
+        <div style="position:relative;z-index:2;">
+            <h2 class="hero-title">
+                {{ $greet }} {{ auth()->user()->name }} 🎉
+            </h2>
+            <p class="hero-subtitle">Anda adalah admin Wedding Organizer</p>
+        </div>
+        <div style="position:relative;z-index:2;margin-top:16px;">
+            <p class="hero-amount">{{ $fS($totalEstimasiOmset) }}</p>
+            <p class="hero-percent">{{ $pctS }}% pesanan selesai</p>
+            <a href="{{ route('admin.orders.index') }}" class="hero-btn">
+                Lihat Detail
+            </a>
+        </div>
+        <div style="position:absolute;top:12px;right:16px;font-size:30px;opacity:.12;z-index:1;pointer-events:none;user-select:none;">🎁</div>
+    </div>
+
+    {{-- 4 Metric Cards: Total Pesanan, Paket Pernikahan, Paket Dekorasi, Portofolio --}}
+    <div class="metrics-grid">
+        @php
+            $cards = [
+                [
+                    'label' => 'Total Pesanan',
+                    'value' => $totalOrders,
+                    'color' => '#818cf8',
+                    'bg'    => 'rgba(129,140,248,.15)',
+                    'icon'  => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
+                    'route' => route('admin.orders.index'),
+                ],
+                [
+                    'label' => 'Paket Pernikahan',
+                    'value' => $totalPackages,
+                    'color' => '#34d399',
+                    'bg'    => 'rgba(52,211,153,.15)',
+                    'icon'  => 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
+                    'route' => route('admin.packages.index'),
+                ],
+                [
+                    'label' => 'Paket Dekorasi',
+                    'value' => $totalDecors,
+                    'color' => '#f472b6',
+                    'bg'    => 'rgba(244,114,182,.15)',
+                    'icon'  => 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z',
+                    'route' => route('admin.decoration-packages.index'),
+                ],
+                [
+                    'label' => 'Total Portofolio',
+                    'value' => $totalPortfolios,
+                    'color' => '#fbbf24',
+                    'bg'    => 'rgba(251,191,36,.15)',
+                    'icon'  => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z',
+                    'route' => route('admin.portfolios.index'),
+                ],
+            ];
+            $sparkH = [[60,80,40,90,50,70,85],[45,70,90,55,80,60,95],[70,50,85,65,40,90,75],[55,90,70,40,85,60,80]];
+        @endphp
+
+        @foreach($cards as $ci => $cd)
+        <a href="{{ $cd['route'] }}" class="m-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div class="m-icon-wrap" style="background:{{ $cd['bg'] }};">
+                    <svg fill="none" stroke="{{ $cd['color'] }}" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $cd['icon'] }}"/></svg>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <p class="m-value">{{ number_format($cd['value'], 0, ',', '.') }}</p>
+                <p class="m-label">{{ $cd['label'] }}</p>
+            </div>
+            <div class="spk">
+                @foreach($sparkH[$ci] as $sh)
+                <span style="background:{{ $cd['color'] }};height:{{ $sh }}%;opacity:.55;"></span>
+                @endforeach
+            </div>
+        </a>
+        @endforeach
+    </div>
+</div>
+
+{{-- ═══════════════════════════════════════════════════════════════════════ --}}
+{{-- ROW 2 :  DONUT (Status Pesanan)  +  BAR CHART (Pesanan & Omset)          --}}
+{{-- ═══════════════════════════════════════════════════════════════════════ --}}
+<div class="row2 dk-in">
+
+    {{-- Donut: Status Pesanan --}}
+    <div class="dk">
+        <div class="donut-card-inner">
+            <div class="chart-header">
+                <h3 class="chart-title">Status Pesanan</h3>
+                <a href="{{ route('admin.orders.index') }}" class="chart-link">Lihat Semua →</a>
+            </div>
+
+            {{-- Donut chart --}}
+            <div class="donut-wrap">
+                <div class="donut-container">
+                    <canvas id="donutChart"></canvas>
+                    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                        <span class="donut-center-pct">{{ $pctS }}%</span>
+                        <span class="donut-center-label">Total Selesai</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Legend --}}
+            <div style="border-top:1px solid rgba(255,255,255,.05);padding-top:10px;">
                 @php
-                    $hour = now()->format('H');
-                    if ($hour < 12) $greeting = 'Selamat Pagi';
-                    elseif ($hour < 15) $greeting = 'Selamat Siang';
-                    elseif ($hour < 18) $greeting = 'Selamat Sore';
-                    else $greeting = 'Selamat Malam';
+                    $lgd = [
+                        ['l'=>'Menunggu','c'=>'#fbbf24','p'=>$pctM],
+                        ['l'=>'Dikonfirmasi','c'=>'#38bdf8','p'=>$pctK],
+                        ['l'=>'Selesai','c'=>'#34d399','p'=>$pctS],
+                        ['l'=>'Dibatalkan','c'=>'#f87171','p'=>$pctB],
+                    ];
                 @endphp
-                {{ $greeting }} 👋
-            </p>
-            <h1 class="greeting-text text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
-                {{ auth()->user()->name }}
-            </h1>
-            <p class="text-sm text-slate-400 mt-1 font-medium">Berikut ringkasan data wedding organizer Anda hari ini.</p>
-        </div>
-
-        {{-- Quick Actions --}}
-        <div class="flex items-center gap-2 flex-wrap">
-            <a href="{{ route('admin.portfolios.create') }}" class="quick-action">
-                <span class="w-7 h-7 rounded-lg bg-rose-50 text-rose-500 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </span>
-                Portofolio
-            </a>
-            <a href="{{ route('admin.packages.create') }}" class="quick-action">
-                <span class="w-7 h-7 rounded-lg bg-violet-50 text-violet-500 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </span>
-                Paket
-            </a>
-        </div>
-    </div>
-</div>
-
-{{-- ── Stat Cards Grid (3x2) ─────────────────────────────────────────── --}}
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8 stagger">
-
-    {{-- Total Paket --}}
-    <a href="{{ route('admin.packages.index') }}" class="stat-card stat-violet">
-        <svg class="bg-glyph" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-        </svg>
-        <div class="flex items-center gap-4">
-            <div class="icon-wrap">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                </svg>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Total Paket</p>
-                <p class="counter-num text-3xl font-extrabold text-slate-800 leading-none" data-target="{{ $totalPackages }}">0</p>
-            </div>
-        </div>
-    </a>
-
-    {{-- Total Portofolio --}}
-    <a href="{{ route('admin.portfolios.index') }}" class="stat-card stat-rose">
-        <svg class="bg-glyph" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
-        <div class="flex items-center gap-4">
-            <div class="icon-wrap">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Portofolio</p>
-                <p class="counter-num text-3xl font-extrabold text-slate-800 leading-none" data-target="{{ $totalPortfolios }}">0</p>
-            </div>
-        </div>
-    </a>
-
-    {{-- Total Paket Dekorasi --}}
-    <a href="{{ route('admin.decoration-packages.index') }}" class="stat-card stat-emerald">
-        <svg class="bg-glyph" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-        </svg>
-        <div class="flex items-center gap-4">
-            <div class="icon-wrap">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
-                </svg>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Paket Dekor</p>
-                <p class="counter-num text-3xl font-extrabold text-slate-800 leading-none" data-target="{{ $totalDecors }}">0</p>
-            </div>
-        </div>
-    </a>
-
-    {{-- Total Vendor --}}
-    <a href="{{ route('admin.vendors.index') }}" class="stat-card stat-sky">
-        <svg class="bg-glyph" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-        </svg>
-        <div class="flex items-center gap-4">
-            <div class="icon-wrap">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                </svg>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Total Vendor</p>
-                <p class="counter-num text-3xl font-extrabold text-slate-800 leading-none" data-target="{{ $totalVendors }}">0</p>
-            </div>
-        </div>
-    </a>
-
-    {{-- Total Addons --}}
-    <a href="{{ route('admin.addons.index') }}" class="stat-card stat-amber">
-        <svg class="bg-glyph" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-        </svg>
-        <div class="flex items-center gap-4">
-            <div class="icon-wrap">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
-                </svg>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Addons</p>
-                <p class="counter-num text-3xl font-extrabold text-slate-800 leading-none" data-target="{{ $totalAddons }}">0</p>
-            </div>
-        </div>
-    </a>
-
-    {{-- Total User --}}
-    <a href="{{ route('admin.users.index') }}" class="stat-card stat-slate">
-        <svg class="bg-glyph" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-        </svg>
-        <div class="flex items-center gap-4">
-            <div class="icon-wrap">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                </svg>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Admin Users</p>
-                <p class="counter-num text-3xl font-extrabold text-slate-800 leading-none" data-target="{{ $totalUsers }}">0</p>
-            </div>
-        </div>
-    </a>
-
-</div>
-
-{{-- ── Data Terbaru ───────────────────────────────────────────────────── --}}
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-    {{-- Portofolio Terbaru --}}
-    <div class="section-card">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-50">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                </div>
-                <h3 class="font-bold text-sm text-slate-800">Portofolio Terbaru</h3>
-            </div>
-            <a href="{{ route('admin.portfolios.create') }}"
-               class="flex items-center gap-1.5 text-xs font-bold text-rose-500 bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg transition-colors">
-                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                </svg>
-                Tambah
-            </a>
-        </div>
-        <div class="flex-1">
-            @if($latestPortfolios->isEmpty())
-                <div class="p-10 text-center">
-                    <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-slate-50 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
-                    </div>
-                    <p class="text-sm text-slate-400 font-medium">Belum ada portofolio.</p>
-                    <p class="text-xs text-slate-300 mt-1">Mulai tambahkan portofolio pertama Anda</p>
-                </div>
-            @else
-                @foreach($latestPortfolios as $p)
-                @php $thumb = $p->first_image; @endphp
-                <div class="list-row group">
-                    @if($thumb)
-                        <img src="{{ asset('storage/' . $thumb) }}" alt="{{ $p->title }}"
-                             class="w-11 h-11 rounded-xl object-cover border border-slate-100 flex-shrink-0"
-                             onerror="this.onerror=null;this.src='';this.outerHTML='<div class=&quot;w-11 h-11 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0&quot;><svg class=&quot;w-4 h-4 text-slate-300&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; viewBox=&quot;0 0 24 24&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; stroke-width=&quot;2&quot; d=&quot;M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z&quot;/></svg></div>';">
-                    @else
-                        <div class="w-11 h-11 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0">
-                            <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        </div>
-                    @endif
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-bold text-slate-800 truncate">{{ $p->title }}</p>
-                        <div class="flex items-center gap-2 mt-0.5">
-                            <span class="text-xs font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded" style="font-size:10px;">{{ $p->images->count() }} foto</span>
-                            <span class="text-xs text-slate-300 font-medium" style="font-size:11px;">{{ $p->created_at->diffForHumans() }}</span>
-                        </div>
-                    </div>
-                    <a href="{{ route('admin.portfolios.edit', $p) }}" class="action-btn">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                    </a>
+                @foreach($lgd as $lg)
+                <div class="lg-row">
+                    <div class="lg-dot" style="background:{{ $lg['c'] }};"></div>
+                    <span class="lg-label">{{ $lg['l'] }}</span>
+                    <span class="lg-pct">{{ $lg['p'] }}%</span>
                 </div>
                 @endforeach
-            @endif
-        </div>
-        <a href="{{ route('admin.portfolios.index') }}"
-           class="flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold text-rose-500 hover:text-rose-600 bg-rose-50/50 hover:bg-rose-50 transition-colors border-t border-slate-50">
-            Lihat Semua Portofolio
-            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-        </a>
-    </div>
-
-    {{-- Paket Terbaru --}}
-    <div class="section-card">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-50">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
-                </div>
-                <h3 class="font-bold text-sm text-slate-800">Paket Terbaru</h3>
             </div>
-            <a href="{{ route('admin.packages.create') }}"
-               class="flex items-center gap-1.5 text-xs font-bold text-violet-500 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-lg transition-colors">
-                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                </svg>
-                Tambah
-            </a>
         </div>
-        <div class="flex-1">
-            @if($latestPackages->isEmpty())
-                <div class="p-10 text-center">
-                    <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-slate-50 flex items-center justify-center">
-                        <svg class="w-6 h-6 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                        </svg>
-                    </div>
-                    <p class="text-sm text-slate-400 font-medium">Belum ada paket pernikahan.</p>
-                    <p class="text-xs text-slate-300 mt-1">Buat paket pertama Anda sekarang</p>
-                </div>
-            @else
-                @foreach($latestPackages as $pkg)
-                <div class="list-row group">
-                    <div class="w-11 h-11 rounded-xl bg-violet-50 flex items-center justify-center flex-shrink-0 border border-violet-100">
-                        <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-bold text-slate-800 truncate">{{ $pkg->name }}</p>
-                        <p class="text-xs text-violet-500 font-bold mt-0.5">Rp {{ number_format($pkg->price, 0, ',', '.') }}</p>
-                    </div>
-                    <a href="{{ route('admin.packages.edit', $pkg) }}" class="action-btn">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                    </a>
-                </div>
-                @endforeach
-            @endif
-        </div>
-        <a href="{{ route('admin.packages.index') }}"
-           class="flex items-center justify-center gap-2 px-6 py-3 text-xs font-bold text-violet-500 hover:text-violet-600 bg-violet-50/50 hover:bg-violet-50 transition-colors border-t border-slate-50">
-            Lihat Semua Paket
-            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
-        </a>
     </div>
 
+    {{-- Bar Chart: Pesanan & Omset --}}
+    <div class="dk">
+        <div class="bar-card-inner">
+            <div class="chart-header">
+                <h3 class="chart-title">Pesanan & Omset</h3>
+                <span class="chart-year">Tahun {{ now()->year }}</span>
+            </div>
+
+            {{-- Chart container --}}
+            <div class="bar-chart-wrap">
+                <canvas id="barChart"></canvas>
+            </div>
+
+            {{-- Bottom summary pills --}}
+            <div class="sum-grid" style="margin-top:14px;border-top:1px solid rgba(255,255,255,.05);padding-top:14px;">
+                <div class="sum-pill">
+                    <div class="sum-icon" style="background:rgba(129,140,248,.15);">
+                        <svg fill="none" stroke="#818cf8" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                    </div>
+                    <div style="min-width:0;">
+                        <p class="sum-label">Total Pesanan</p>
+                        <p class="sum-value">{{ number_format($totalOrders,0,',','.') }}</p>
+                    </div>
+                </div>
+                <div class="sum-pill">
+                    <div class="sum-icon" style="background:rgba(251,191,36,.15);">
+                        <svg fill="none" stroke="#fbbf24" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div style="min-width:0;">
+                        <p class="sum-label">Total Omset</p>
+                        <p class="sum-value">{{ $fS($totalEstimasiOmset) }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @endsection
 
 @push('scripts')
 <script>
-    // Counter animation
-    document.addEventListener('DOMContentLoaded', () => {
-        const counters = document.querySelectorAll('.counter-num[data-target]');
-        const speed = 40;
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const el = entry.target;
-                    const target = parseInt(el.dataset.target) || 0;
-
-                    if (target === 0) {
-                        el.textContent = '0';
-                        return;
+document.addEventListener('DOMContentLoaded', () => {
+    // ── Donut Chart ────────────────────────────────────
+    const dc = document.getElementById('donutChart');
+    if (dc) {
+        new Chart(dc, {
+            type: 'doughnut',
+            data: {
+                labels: ['Menunggu', 'Dikonfirmasi', 'Selesai', 'Dibatalkan'],
+                datasets: [{
+                    data: [{{ $ordersMenunggu }}, {{ $ordersDikonfirmasi }}, {{ $ordersSelesai }}, {{ $ordersDibatalkan }}],
+                    backgroundColor: ['#fbbf24', '#38bdf8', '#34d399', '#f87171'],
+                    borderColor: '#222539',
+                    borderWidth: 3,
+                    hoverOffset: 6,
+                }]
+            },
+            options: {
+                cutout: '70%',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#e2e8f0',
+                        bodyColor: '#94a3b8',
+                        cornerRadius: 8,
+                        padding: 10,
                     }
-
-                    let current = 0;
-                    const increment = Math.max(1, Math.ceil(target / 30));
-                    const timer = setInterval(() => {
-                        current += increment;
-                        if (current >= target) {
-                            current = target;
-                            clearInterval(timer);
-                        }
-                        el.textContent = current.toLocaleString('id-ID');
-                    }, speed);
-
-                    observer.unobserve(el);
                 }
-            });
-        }, { threshold: 0.3 });
+            }
+        });
+    }
 
-        counters.forEach(c => observer.observe(c));
-    });
+    // ── Bar Chart ──────────────────────────────────────
+    const bc = document.getElementById('barChart');
+    if (bc) {
+        new Chart(bc, {
+            type: 'bar',
+            data: {
+                labels: ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'],
+                datasets: [
+                    {
+                        label: 'Pesanan',
+                        data: [
+                            @for($m = 1; $m <= 12; $m++)
+                                {{ $monthlyData[$m]['orders'] }}{{ $m < 12 ? ',' : '' }}
+                            @endfor
+                        ],
+                        backgroundColor: '#818cf8',
+                        borderRadius: 4,
+                        barPercentage: 0.45,
+                        categoryPercentage: 0.55,
+                    },
+                    {
+                        label: 'Omset (Jt)',
+                        data: [
+                            @for($m = 1; $m <= 12; $m++)
+                                {{ round($monthlyData[$m]['revenue'] / 1000000, 1) }}{{ $m < 12 ? ',' : '' }}
+                            @endfor
+                        ],
+                        backgroundColor: '#fbbf24',
+                        borderRadius: 4,
+                        barPercentage: 0.45,
+                        categoryPercentage: 0.55,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#535773', font: { size: 10, weight: '600' } },
+                        border: { display: false },
+                    },
+                    y: {
+                        grid: { color: 'rgba(255,255,255,.04)' },
+                        ticks: { color: '#535773', font: { size: 10 }, beginAtZero: true },
+                        border: { display: false },
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#94a3b8',
+                            font: { size: 10, weight: '600' },
+                            usePointStyle: true,
+                            pointStyle: 'rect',
+                            padding: 16,
+                            boxWidth: 10,
+                            boxHeight: 10,
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        titleColor: '#e2e8f0',
+                        bodyColor: '#94a3b8',
+                        cornerRadius: 8,
+                        padding: 10,
+                    }
+                }
+            }
+        });
+    }
+});
 </script>
 @endpush

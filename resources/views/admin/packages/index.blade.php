@@ -5,7 +5,7 @@
 
 @section('content')
 
-<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+<div class="max-w-5xl bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
         <div>
@@ -33,46 +33,72 @@
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wide">
-                        <th class="px-5 py-3 text-left font-semibold">#</th>
-                        <th class="px-5 py-3 text-left font-semibold">Nama Paket</th>
-                        <th class="px-5 py-3 text-left font-semibold">Harga</th>
-                        <th class="px-5 py-3 text-left font-semibold">Deskripsi</th>
-                        <th class="px-5 py-3 text-left font-semibold">Fasilitas</th>
-                        <th class="px-5 py-3 text-center font-semibold">Aksi</th>
+                    <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wide border-b border-slate-100">
+                        <th class="px-4 py-3 text-left font-semibold w-10">#</th>
+                        <th class="px-3 py-3 text-left font-semibold w-24 whitespace-nowrap">Batch</th>
+                        <th class="px-4 py-3 text-left font-semibold min-w-[200px]">Nama Paket</th>
+                        <th class="px-3 py-3 text-left font-semibold w-32 whitespace-nowrap">Harga</th>
+                        <th class="px-3 py-3 text-left font-semibold w-36 whitespace-nowrap">Venue / Pax</th>
+                        <th class="px-3 py-3 text-center font-semibold w-24 whitespace-nowrap">Status</th>
+                        <th class="px-4 py-3 text-center font-semibold w-32 whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @foreach($packages as $package)
                     <tr class="hover:bg-slate-50/70 transition-colors">
-                        <td class="px-5 py-3 text-slate-400 font-mono text-xs">
+                        <td class="px-4 py-3 text-slate-400 font-mono text-xs">
                             {{ $packages->firstItem() + $loop->index }}
                         </td>
-                        <td class="px-5 py-3">
-                            <p class="font-semibold text-slate-800">{{ $package->name }}</p>
+                        <td class="px-3 py-3 whitespace-nowrap">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-violet-50 text-violet-700 border border-violet-100">
+                                Batch {{ $package->batch }}
+                            </span>
                         </td>
-                        <td class="px-5 py-3 whitespace-nowrap">
+                        <td class="px-4 py-3">
+                            <p class="font-semibold text-slate-800 leading-snug">{{ $package->name }}</p>
+                            @if($package->description)
+                                <p class="text-xs text-slate-400 mt-0.5 truncate max-w-sm">{{ Str::limit($package->description, 55) }}</p>
+                            @endif
+                        </td>
+                        <td class="px-3 py-3 whitespace-nowrap">
                             <span class="inline-flex items-center bg-emerald-50 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-lg">
                                 Rp {{ number_format($package->price, 0, ',', '.') }}
                             </span>
                         </td>
-                        <td class="px-5 py-3 max-w-xs">
-                            <p class="text-slate-500 truncate">{{ Str::limit($package->description, 50) }}</p>
+                        <td class="px-3 py-3 whitespace-nowrap text-xs text-slate-600">
+                            @if($package->venue)
+                                <span class="inline-flex items-center gap-1 text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-medium">
+                                    🏛 {{ $package->venue->name }}
+                                </span>
+                            @else
+                                <span class="text-slate-400">Tanpa Venue</span>
+                            @endif
+                            @if($package->pax)
+                                <div class="text-slate-400 text-xs mt-0.5">👥 {{ number_format($package->pax) }} pax</div>
+                            @endif
                         </td>
-                        <td class="px-5 py-3 max-w-xs">
-                            <p class="text-slate-500 truncate">{{ Str::limit($package->facilities, 50) }}</p>
+                        <td class="px-3 py-3 text-center whitespace-nowrap">
+                            @if($package->status === 'active')
+                                <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aktif
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Nonaktif
+                                </span>
+                            @endif
                         </td>
-                        <td class="px-5 py-3">
-                            <div class="flex items-center justify-center gap-2">
+                        <td class="px-4 py-3 text-center whitespace-nowrap">
+                            <div class="inline-flex items-center justify-center gap-1.5">
                                 <a href="{{ route('admin.packages.edit', $package) }}"
-                                   class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-sky-50 text-sky-600 hover:bg-sky-100 rounded-lg transition-colors">
+                                   class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium bg-sky-50 text-sky-600 hover:bg-sky-100 rounded-lg transition-colors">
                                     Edit
                                 </a>
 
                                 {{-- Tombol hapus — trigger via JS --}}
                                 <button type="button"
                                     onclick="hapusData('{{ route('admin.packages.destroy', $package) }}', 'Hapus paket &ldquo;{{ addslashes($package->name) }}&rdquo;?')"
-                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors">
+                                    class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors">
                                     Hapus
                                 </button>
                             </div>

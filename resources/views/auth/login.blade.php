@@ -6,6 +6,11 @@
     <meta name="description" content="Login Admin Panel — Kembar Kencana Wedding Organizer">
     <title>Login — Kembar Kencana Admin</title>
 
+    {{-- Favicon --}}
+    <link rel="icon" type="image/jpeg" href="{{ asset('images/logo.JPG') }}">
+    <link rel="shortcut icon" href="{{ asset('images/logo.JPG') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.JPG') }}">
+
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

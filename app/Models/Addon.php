@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class Addon extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'name',
         'category',
@@ -21,9 +22,6 @@ class Addon extends Model
         'status',
     ];
 
-    /**
-     * The attributes that should be cast.
-     */
     protected function casts(): array
     {
         return [
@@ -31,63 +29,70 @@ class Addon extends Model
         ];
     }
 
-    // ─── Konstanta Pilihan ────────────────────────────────────────────────────
+    // ─── Konstanta ────────────────────────────────────────────────────────────
 
-    /** Kategori add-on. */
+    /** Kategori add-on (diperluas sesuai revisi penguji). */
     const CATEGORIES = [
-        'Tenda',
-        'Kursi',
-        'AC / Blower',
-        'Alat Catering',
-        'Panggung',
+        // Kategori MUA & Busana
+        'MUA & Busana',
+        // Kategori Souvenir & Undangan
+        'Souvenir & Undangan',
+        // Kategori Tenda & Dekorasi
+        'Tenda & Dekorasi',
+        // Kategori Catering
+        'Catering',
+        // Kategori Lainnya
+        'Lainnya',
     ];
 
     /** Satuan harga. */
     const UNITS = [
-        'meter',
-        'unit',
         'pax',
+        'orang',
         'set',
+        'unit',
+        'meter',
+        'lembar',
+        'buah',
+        'paket',
     ];
+
+    // ─── Scopes ───────────────────────────────────────────────────────────────
+
+    /** Hanya add-on aktif. */
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('status', 'active');
+    }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
-    /**
-     * Cek apakah add-on dalam status aktif.
-     */
     public function isActive(): bool
     {
         return $this->status === 'active';
     }
 
-    /**
-     * Scope: hanya add-on yang aktif (untuk kalkulator/landing page).
-     */
-    public function scopeActive($query)
-    {
-        return $query->where('status', 'active');
-    }
-
-    /**
-     * Label satuan yang user-friendly.
-     */
     public function getUnitLabelAttribute(): string
     {
         return '/ ' . $this->unit;
     }
 
-    /**
-     * Warna badge Tailwind berdasarkan kategori.
-     */
+    /** Warna badge berdasarkan kategori. */
     public function getCategoryColorAttribute(): string
     {
         return match ($this->category) {
-            'Tenda'         => 'bg-blue-50 text-blue-700',
-            'Kursi'         => 'bg-amber-50 text-amber-700',
-            'AC / Blower'   => 'bg-cyan-50 text-cyan-700',
-            'Alat Catering' => 'bg-orange-50 text-orange-700',
-            'Panggung'      => 'bg-purple-50 text-purple-700',
-            default         => 'bg-slate-50 text-slate-600',
+            'MUA & Busana'       => 'bg-pink-50 text-pink-700',
+            'Souvenir & Undangan'=> 'bg-amber-50 text-amber-700',
+            'Tenda & Dekorasi'   => 'bg-blue-50 text-blue-700',
+            'Catering'           => 'bg-orange-50 text-orange-700',
+            'Lainnya'            => 'bg-slate-50 text-slate-600',
+            default              => 'bg-slate-50 text-slate-600',
         };
+    }
+
+    /** Harga dalam format Rupiah. */
+    public function getPriceFormattedAttribute(): string
+    {
+        return 'Rp ' . number_format((float) $this->price, 0, ',', '.');
     }
 }

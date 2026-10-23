@@ -19,7 +19,7 @@
     ];
 @endphp
 
-<div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+<div class="max-w-5xl bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
 
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
@@ -27,13 +27,15 @@
             <h3 class="font-semibold text-slate-800">Daftar Vendor & Partner</h3>
             <p class="text-xs text-slate-400 mt-0.5">Total: {{ $vendors->total() }} vendor · Tampil di landing page</p>
         </div>
-        <a href="{{ route('admin.vendors.create') }}"
-           class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-            </svg>
-            Tambah Vendor
-        </a>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('admin.vendors.create') }}"
+               class="inline-flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Tambah Vendor
+            </a>
+        </div>
     </div>
 
     @if($vendors->isEmpty())
@@ -121,7 +123,7 @@
 
                         {{-- Aksi --}}
                         <td class="px-5 py-3">
-                            <div class="flex items-center justify-center gap-2">
+                            <div class="flex items-center justify-center gap-1.5">
                                 <a href="{{ route('admin.vendors.edit', $vendor) }}"
                                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium bg-sky-50 text-sky-600 hover:bg-sky-100 rounded-lg transition-colors">
                                     Edit

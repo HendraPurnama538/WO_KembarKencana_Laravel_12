@@ -91,23 +91,31 @@
             {{-- Status --}}
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-2">Status <span class="text-red-500">*</span></label>
-                <div class="flex gap-4">
-                    <label class="inline-flex items-center gap-2 cursor-pointer">
+                <div class="grid grid-cols-2 gap-3 max-w-md">
+                    <label class="relative flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50/60 has-[:checked]:shadow-sm border-slate-200 bg-white hover:border-slate-300">
                         <input type="radio" name="status" value="active"
-                               {{ old('status', $addon->status) === 'active' ? 'checked' : '' }} class="accent-violet-600">
-                        <span class="text-sm text-slate-700 inline-flex items-center gap-1">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Aktif
-                        </span>
+                               {{ old('status', $addon->status) === 'active' ? 'checked' : '' }}
+                               class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-slate-300">
+                        <div>
+                            <div class="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Aktif
+                            </div>
+                            <p class="text-[11px] text-slate-400">Tampil di publik</p>
+                        </div>
                     </label>
-                    <label class="inline-flex items-center gap-2 cursor-pointer">
+
+                    <label class="relative flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-rose-400 has-[:checked]:bg-rose-50/60 has-[:checked]:shadow-sm border-slate-200 bg-white hover:border-slate-300">
                         <input type="radio" name="status" value="inactive"
-                               {{ old('status', $addon->status) === 'inactive' ? 'checked' : '' }} class="accent-violet-600">
-                        <span class="text-sm text-slate-700 inline-flex items-center gap-1">
-                            <span class="w-2 h-2 rounded-full bg-red-400"></span> Nonaktif
-                        </span>
+                               {{ old('status', $addon->status) === 'inactive' ? 'checked' : '' }}
+                               class="w-4 h-4 text-rose-600 focus:ring-rose-500 border-slate-300">
+                        <div>
+                            <div class="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span> Nonaktif
+                            </div>
+                            <p class="text-[11px] text-slate-400">Disembunyikan</p>
+                        </div>
                     </label>
                 </div>
-                <p class="mt-1 text-xs text-slate-400">Add-on nonaktif tidak akan muncul di kalkulator estimasi.</p>
             </div>
 
             {{-- Actions --}}

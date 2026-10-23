@@ -38,8 +38,8 @@
                 </div>
             </div>
 
-            {{-- Harga + Pax --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {{-- Harga + Pax + Venue --}}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label for="price" class="block text-sm font-medium text-slate-700 mb-1.5">
                         Harga (Rp) <span class="text-red-500">*</span>
@@ -47,7 +47,7 @@
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500 font-medium">Rp</span>
                         <input id="price" name="price" type="number" value="{{ old('price') }}"
-                               placeholder="0" min="0" step="1000"
+                               placeholder="0" min="0" step="any"
                                class="w-full rounded-xl border-slate-300 text-sm pl-10 focus:border-violet-400 focus:ring-violet-400 @error('price') border-red-400 @enderror">
                     </div>
                     @error('price')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
@@ -57,6 +57,20 @@
                     <input id="pax" name="pax" type="number" value="{{ old('pax') }}"
                            placeholder="cth: 500" min="1"
                            class="w-full rounded-xl border-slate-300 text-sm focus:border-violet-400 focus:ring-violet-400">
+                </div>
+                <div>
+                    <label for="venue_id" class="block text-sm font-medium text-slate-700 mb-1.5">
+                        Venue <span class="text-xs text-slate-400">(Opsional / Batch 4)</span>
+                    </label>
+                    <select id="venue_id" name="venue_id"
+                            class="w-full rounded-xl border-slate-300 text-sm focus:border-violet-400 focus:ring-violet-400">
+                        <option value="">— Tanpa Venue —</option>
+                        @foreach($venues ?? [] as $v)
+                            <option value="{{ $v->id }}" {{ old('venue_id') == $v->id ? 'selected' : '' }}>
+                                {{ $v->name }} {{ $v->capacity ? "({$v->capacity} pax)" : '' }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 
@@ -109,17 +123,29 @@
             {{-- Status --}}
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-2">Status <span class="text-red-500">*</span></label>
-                <div class="flex gap-4">
-                    <label class="inline-flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="status" value="active" {{ old('status','active') === 'active' ? 'checked' : '' }} class="accent-violet-600">
-                        <span class="text-sm text-slate-700 inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Aktif</span>
+                <div class="grid grid-cols-2 gap-3 max-w-md">
+                    <label class="relative flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50/60 has-[:checked]:shadow-sm border-slate-200 bg-white hover:border-slate-300">
+                        <input type="radio" name="status" value="active" {{ old('status','active') === 'active' ? 'checked' : '' }}
+                               class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-slate-300">
+                        <div>
+                            <div class="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Aktif
+                            </div>
+                            <p class="text-[11px] text-slate-400">Tampil di publik</p>
+                        </div>
                     </label>
-                    <label class="inline-flex items-center gap-2 cursor-pointer">
-                        <input type="radio" name="status" value="inactive" {{ old('status') === 'inactive' ? 'checked' : '' }} class="accent-violet-600">
-                        <span class="text-sm text-slate-700 inline-flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> Nonaktif</span>
+
+                    <label class="relative flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-rose-400 has-[:checked]:bg-rose-50/60 has-[:checked]:shadow-sm border-slate-200 bg-white hover:border-slate-300">
+                        <input type="radio" name="status" value="inactive" {{ old('status') === 'inactive' ? 'checked' : '' }}
+                               class="w-4 h-4 text-rose-600 focus:ring-rose-500 border-slate-300">
+                        <div>
+                            <div class="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span> Nonaktif
+                            </div>
+                            <p class="text-[11px] text-slate-400">Disembunyikan</p>
+                        </div>
                     </label>
                 </div>
-                <p class="mt-1 text-xs text-slate-400">Paket nonaktif tidak tampil di landing page.</p>
             </div>
 
             {{-- Actions --}}

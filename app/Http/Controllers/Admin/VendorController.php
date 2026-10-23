@@ -39,15 +39,23 @@ class VendorController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name'          => 'required|string|max:255',
-            'handle'        => 'required|string|max:255',
-            'category'      => 'required|string|max:100',
-            'icon'          => 'nullable|string|max:100',
-            'image'         => 'nullable|mimes:jpg,jpeg,png,webp,heic|max:2048',
-            'description'   => 'nullable|string',
-            'instagram_url' => 'required|url|max:500',
-            'status'        => 'required|in:active,inactive',
+            'name'               => 'required|string|max:255',
+            'handle'             => 'required|string|max:255',
+            'category'           => 'required|string|max:100',
+            'icon'               => 'nullable|string|max:100',
+            'image'              => 'nullable|mimes:jpg,jpeg,png,webp,heic|max:2048',
+            'description'        => 'nullable|string',
+            'instagram_url'      => 'required|url|max:500',
+            'instagram_username' => 'nullable|string|max:100',
+            'status'             => 'required|in:active,inactive',
         ]);
+
+        // Auto-extract instagram username jika kosong
+        if (empty($validated['instagram_username']) && !empty($validated['instagram_url'])) {
+            $validated['instagram_username'] = \App\Services\InstagramService::extractUsernameFromUrl($validated['instagram_url']);
+        } elseif (!empty($validated['instagram_username'])) {
+            $validated['instagram_username'] = ltrim($validated['instagram_username'], '@');
+        }
 
         // Upload gambar jika ada
         if ($request->hasFile('image')) {
@@ -58,8 +66,6 @@ class VendorController extends Controller
         if (empty($validated['icon'])) {
             $validated['icon'] = Vendor::CATEGORY_ICONS[$validated['category']] ?? 'bi-check-circle-fill';
         }
-
-        // Remove sort_order line
 
         Vendor::create($validated);
 
@@ -84,20 +90,28 @@ class VendorController extends Controller
     public function update(Request $request, Vendor $vendor): RedirectResponse
     {
         $validated = $request->validate([
-            'name'          => 'required|string|max:255',
-            'handle'        => 'required|string|max:255',
-            'category'      => 'required|string|max:100',
-            'icon'          => 'nullable|string|max:100',
-            'image'         => 'nullable|mimes:jpg,jpeg,png,webp,heic|max:2048',
-            'description'   => 'nullable|string',
-            'instagram_url' => 'required|url|max:500',
-            'status'        => 'required|in:active,inactive',
-            'remove_image'  => 'nullable|boolean',
+            'name'               => 'required|string|max:255',
+            'handle'             => 'required|string|max:255',
+            'category'           => 'required|string|max:100',
+            'icon'               => 'nullable|string|max:100',
+            'image'              => 'nullable|mimes:jpg,jpeg,png,webp,heic|max:2048',
+            'description'        => 'nullable|string',
+            'instagram_url'      => 'required|url|max:500',
+            'instagram_username' => 'nullable|string|max:100',
+            'status'             => 'required|in:active,inactive',
+            'remove_image'       => 'nullable|boolean',
         ]);
+
+        // Auto-extract instagram username jika kosong
+        if (empty($validated['instagram_username']) && !empty($validated['instagram_url'])) {
+            $validated['instagram_username'] = \App\Services\InstagramService::extractUsernameFromUrl($validated['instagram_url']);
+        } elseif (!empty($validated['instagram_username'])) {
+            $validated['instagram_username'] = ltrim($validated['instagram_username'], '@');
+        }
 
         // Hapus gambar jika dicentang "Hapus foto"
         if ($request->boolean('remove_image')) {
-            if ($vendor->image && !str_starts_with($vendor->image, 'images/')) {
+            if ($vendor->image && strpos($vendor->image, 'images/') !== 0) {
                 Storage::disk('public')->delete($vendor->image);
             }
             $validated['image'] = null;
@@ -106,7 +120,7 @@ class VendorController extends Controller
         // Upload gambar baru jika ada
         if ($request->hasFile('image')) {
             // Hapus gambar lama dari storage (jangan hapus yang di public/images)
-            if ($vendor->image && !str_starts_with($vendor->image, 'images/')) {
+            if ($vendor->image && strpos($vendor->image, 'images/') !== 0) {
                 Storage::disk('public')->delete($vendor->image);
             }
             $validated['image'] = $request->file('image')->store('vendors', 'public');
@@ -116,8 +130,6 @@ class VendorController extends Controller
         if (empty($validated['icon'])) {
             $validated['icon'] = Vendor::CATEGORY_ICONS[$validated['category']] ?? 'bi-check-circle-fill';
         }
-
-        // Remove sort_order line
 
         $vendor->update($validated);
 
@@ -131,7 +143,7 @@ class VendorController extends Controller
     public function destroy(Vendor $vendor): RedirectResponse
     {
         // Hapus gambar dari storage (jangan hapus yang di public/images)
-        if ($vendor->image && !str_starts_with($vendor->image, 'images/')) {
+        if ($vendor->image && strpos($vendor->image, 'images/') !== 0) {
             Storage::disk('public')->delete($vendor->image);
         }
 

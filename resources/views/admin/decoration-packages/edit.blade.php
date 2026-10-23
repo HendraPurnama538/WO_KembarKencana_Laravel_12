@@ -178,9 +178,9 @@
                                 d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                         <span>Klik untuk pilih gambar baru</span>
-                        <span class="text-xs text-slate-300">JPG, PNG, WEBP — maks. 3MB</span>
+                        <span class="text-xs text-slate-300">JPG, PNG, WEBP, HEIC — maks. 3MB</span>
                         <input id="image" name="image" type="file"
-                               accept="image/jpeg,image/png,image/jpg,image/webp"
+                               accept="image/jpeg,image/png,image/jpg,image/webp,.heic,image/heic"
                                class="sr-only" onchange="previewImage(this)">
                     </label>
                 </div>
@@ -194,31 +194,31 @@
                 <label class="block text-sm font-medium text-slate-700 mb-2">
                     Status <span class="text-red-500">*</span>
                 </label>
-                <div class="flex gap-4">
-                    <label class="inline-flex items-center gap-2 cursor-pointer">
+                <div class="grid grid-cols-2 gap-3 max-w-md">
+                    <label class="relative flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50/60 has-[:checked]:shadow-sm border-slate-200 bg-white hover:border-slate-300">
                         <input type="radio" name="status" value="active"
                                {{ old('status', $decorationPackage->status) === 'active' ? 'checked' : '' }}
-                               class="accent-violet-600">
-                        <span class="text-sm text-slate-700">
-                            <span class="inline-flex items-center gap-1">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-                                Aktif
-                            </span>
-                        </span>
+                               class="w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-slate-300">
+                        <div>
+                            <div class="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Aktif
+                            </div>
+                            <p class="text-[11px] text-slate-400">Tampil di publik</p>
+                        </div>
                     </label>
-                    <label class="inline-flex items-center gap-2 cursor-pointer">
+
+                    <label class="relative flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all has-[:checked]:border-rose-400 has-[:checked]:bg-rose-50/60 has-[:checked]:shadow-sm border-slate-200 bg-white hover:border-slate-300">
                         <input type="radio" name="status" value="inactive"
                                {{ old('status', $decorationPackage->status) === 'inactive' ? 'checked' : '' }}
-                               class="accent-violet-600">
-                        <span class="text-sm text-slate-700">
-                            <span class="inline-flex items-center gap-1">
-                                <span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span>
-                                Nonaktif
-                            </span>
-                        </span>
+                               class="w-4 h-4 text-rose-600 focus:ring-rose-500 border-slate-300">
+                        <div>
+                            <div class="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span> Nonaktif
+                            </div>
+                            <p class="text-[11px] text-slate-400">Disembunyikan</p>
+                        </div>
                     </label>
                 </div>
-                <p class="mt-1 text-xs text-slate-400">Paket nonaktif tidak akan tampil di landing page.</p>
             </div>
 
             {{-- Actions --}}
