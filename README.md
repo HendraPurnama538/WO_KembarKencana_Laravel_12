@@ -28,29 +28,36 @@ Aplikasi **Kembar Kencana Wedding Organizer** dirancang untuk mendigitalkan pros
 
 <div align="center">
 
-### 🏠 Landing Page & Kalkulator Estimasi Biaya
-<img src="screenshots/home.PNG" alt="Landing Page" width="80%">
-<p><em>Tampilan beranda yang elegan dan responsif untuk pengunjung.</em></p>
+### 🏠 Landing Page (Beranda Utama)
+<img src="screenshots/home.PNG" alt="Landing Page Kembar Kencana" width="90%">
+<p><em>Tampilan beranda yang elegan, responsif, dan informatif untuk calon pengantin.</em></p>
 
 <br>
 
-### 🧮 Fitur Simulasi & Kalkulator Pernikahan
-| Pemilihan Paket Utama | Pemilihan Tambahan (Add-on) |
+### 📦 Pilihan Paket Pernikahan & 🧮 Kalkulator Simulasi Biaya
+| Katalog Paket Pernikahan | Kalkulator Simulasi Biaya Interaktif |
 | :---: | :---: |
-| <img src="screenshots/kalkulator%20paket.png" width="100%" alt="Kalkulator Paket"> | <img src="screenshots/kalkulator%20tambahan.png" width="100%" alt="Kalkulator Tambahan"> |
+| <img src="screenshots/paket.png" width="100%" alt="Katalog Paket"> | <img src="screenshots/kalkulator.png" width="100%" alt="Kalkulator Biaya"> |
 
 <br>
 
-### 📊 Dashboard & Panel Admin
-<img src="screenshots/dashboard.PNG" alt="Admin Dashboard" width="80%">
-<p><em>Panel kontrol admin untuk memantau pesanan, omset, dan data operasional.</em></p>
-
-<br>
-
-### 🤝 Manajemen Vendor & Portofolio
-| Manajemen Vendor Rekanan | Galeri Portofolio & Event |
+### 📸 Galeri Portofolio & 📱 Instagram Feed Live
+| Dokumentasi Portofolio Event | Live Feed Instagram Kembar Kencana |
 | :---: | :---: |
-| <img src="screenshots/vendor.PNG" width="100%" alt="Vendor Management"> | <img src="screenshots/portfolio.PNG" width="100%" alt="Portfolio Management"> |
+| <img src="screenshots/portofolio.png" width="100%" alt="Galeri Portofolio"> | <img src="screenshots/feedig.png" width="100%" alt="Feed Instagram"> |
+
+<br>
+
+### 📞 Kontak & Konsultasi Langsung
+<img src="screenshots/kontak.png" alt="Kontak & Reservasi WhatsApp" width="75%">
+<p><em>Formulir dan kontak reservasi langsung terhubung dengan WhatsApp tim Wedding Organizer.</em></p>
+
+<br>
+
+### 🔐 Panel Masuk & 📊 Dashboard Admin
+| Halaman Login Admin | Dashboard Kontrol Operasional |
+| :---: | :---: |
+| <img src="screenshots/login.png" width="100%" alt="Halaman Login"> | <img src="screenshots/dashboard%20admin.png" width="100%" alt="Dashboard Admin"> |
 
 </div>
 
@@ -59,20 +66,20 @@ Aplikasi **Kembar Kencana Wedding Organizer** dirancang untuk mendigitalkan pros
 ## ✨ Fitur Utama
 
 ### 👥 Untuk Pengunjung / Calon Pengantin (Front-End)
-- **Katalog Paket Pernikahan & Dekorasi**: Informasi detail mengenai paket yang ditawarkan beserta rincian fasilitas.
-- **Kalkulator Biaya Interaktif**: Simulasi perhitungan biaya paket utama dan paket add-on secara real-time.
-- **Galeri Portofolio & Testimoni**: Menampilkan dokumentasi acara pernikahan yang telah sukses diselenggarakan.
-- **Instagram Feed Integration**: Live feed update langsung dari akun media sosial Instagram resmi.
-- **Konsultasi & Direct Booking WhatsApp**: Pengunjung dapat langsung terhubung ke admin dengan rincian paket yang dipilih.
+- **Katalog Paket Pernikahan & Dekorasi**: Informasi detail mengenai paket yang ditawarkan beserta rincian fasilitas lengkap.
+- **Kalkulator Biaya Interaktif**: Simulasi perhitungan biaya paket utama dan pilihan tambahan (add-on) secara real-time.
+- **Galeri Portofolio Acara**: Menampilkan dokumentasi acara pernikahan yang telah sukses diselenggarakan.
+- **Live Instagram Feed**: Menampilkan postingan terkini langsung dari feed Instagram resmi Kembar Kencana.
+- **Formulir Kontak & Direct Booking WhatsApp**: Pengunjung dapat langsung berkonsultasi dan terhubung ke admin dengan ringkasan paket yang dipilih.
 
 ### 🛠️ Untuk Pengelola / Admin (Back-End)
-- **Ringkasan Dashboard**: Statistik total paket, pesanan masuk, vendor aktif, dan grafik performa.
-- **Manajemen Pesanan (Orders)**: Kelola status reservasi (Pending, Dikonfirmasi, Selesai, Dibatalkan) dan rincian pesanan.
-- **Manajemen Paket & Dekorasi**: Tambah, ubah, dan nonaktifkan paket pernikahan maupun dekorasi.
-- **Manajemen Venue**: Pengelolaan lokasi/gedung pernikahan yang bekerja sama.
-- **Manajemen Vendor Rekanan**: Pencatatan vendor MUA, fotografi, katering, MC, dsb.
-- **Sinkronisasi Instagram**: Pengaturan API token dan sinkronisasi berkala feed Instagram.
-- **Profil & Pengaturan Akun**: Pengelolaan keamanan akun dan data profil admin.
+- **Ringkasan Dashboard**: Statistik ringkas pesanan masuk, paket aktif, vendor rekanan, dan data keuangan.
+- **Manajemen Pesanan (Orders)**: Kelola data reservasi calon pengantin (Pending, Dikonfirmasi, Selesai, Dibatalkan).
+- **Manajemen Paket & Dekorasi**: Pengelolaan harga, deskripsi, dan fasilitas paket pernikahan maupun dekorasi.
+- **Manajemen Venue**: Pengelolaan lokasi/gedung pernikahan rekanan.
+- **Manajemen Vendor Rekanan**: Data vendor MUA, fotografi, katering, MC, dokumentasi, dsb.
+- **Sinkronisasi Instagram Feed**: Pengaturan token Instagram Graph API dan sinkronisasi berkala feed ke website.
+- **Profil & Keamanan Akun**: Pengaturan nama, email, dan keamanan password admin.
 
 ---
 
@@ -80,8 +87,8 @@ Aplikasi **Kembar Kencana Wedding Organizer** dirancang untuk mendigitalkan pros
 
 - **Backend**: [Laravel 12](https://laravel.com/) (PHP 8.2+)
 - **Database**: MySQL
-- **Frontend**: Blade Templating, HTML5, CSS3, JavaScript, Bootstrap 5 / Tailwind CSS
-- **Icons & Assets**: FontAwesome, Custom Photography & Design Assets
+- **Frontend**: Blade Templating, HTML5, CSS3, JavaScript, Bootstrap 5
+- **Icons & Assets**: FontAwesome, Custom Assets & Photography
 - **Integrasi**: Instagram Graph API & WhatsApp Click-to-Chat
 
 ---
@@ -114,7 +121,7 @@ Sesuaikan konfigurasi database Anda di file `.env`:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=nama_database_anda
+DB_DATABASE=wo_app
 DB_USERNAME=root
 DB_PASSWORD=
 ```
@@ -126,7 +133,7 @@ php artisan migrate --seed
 ```
 
 ### 5. Buat Symlink Storage
-Agar gambar portofolio dan banner dapat tampil dengan benar:
+Agar gambar portofolio dan aset upload dapat tampil dengan benar:
 ```bash
 php artisan storage:link
 ```
